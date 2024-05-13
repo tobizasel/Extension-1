@@ -1,0 +1,26 @@
+{
+    "name": "MeContaron Prueba",
+    "description": "probando",
+    "version": "1.0",
+    "manifest_version": 3 ,
+    "action":{
+        "default_popup":"popup.html",
+        "default_icon": {
+            "128": "logo.png"
+        }
+    },
+    "icons":{
+        "128": "logo.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://www.google.com/*"],
+            "js": ["script.js"]
+        }
+    ],
+    "permissions": [
+        "activeTab", "scripting"
+      ]
+
+
+}
