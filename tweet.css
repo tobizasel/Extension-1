@@ -5,3 +5,7 @@
     right: 0;
     top: 0;
 }
+
+.verdadero{
+    border: 2px solid green !important;
+}
