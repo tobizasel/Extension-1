@@ -1,4 +1,6 @@
-const url = "https://drive.google.com/file/d/1sQulZXA8hcyzzgA1-yJZ_WsnUQnOrann/view?usp=sharing"
+const url = "https://i.ibb.co/Mht5qh2/logo.png"
+let index = 5;
+let tweets = []
 
 function cambiarColor() {
     document.getElementsByTagName("body")[0].style.backgroundColor = "red";
@@ -15,37 +17,42 @@ function cambiarColor() {
 //     boton[1].setAttribute("value", "HOLA")
 // }   
 
-async function waitForTweets() {
-    return new Promise(resolve => {
-        let interval = setInterval(() => {
-            tweets = document.getElementsByTagName("article");
-            if (tweets.length >= 5) {
-                clearInterval(interval);
-                resolve();
-            }
-        }, [1000, window.onscroll()]); // Verificar cada segundo
-    });
-}
-
 async function tweet() {
 
-    await waitForTweets();
-    const tweets = document.getElementsByTagName("article");
     const tweetsArray = Array.from(tweets)
 
     tweetsArray.forEach(twit => {
-        twit.classList.add("verdadero")
+        const real =  Math.floor((Math.random() * 2) + 1)
+        console.log(real);
+        if (real == 1) {
+            twit.classList.add("verdadero")
+        } else {
+            twit.classList.add("falso")
+        }
+
         console.log(twit);
+        console.log(twit.children[0], "AAAAAAAA");
         const logo = document.createElement("img");
-        logo.setAttribute("src", {url});
+        logo.setAttribute("src", "https://i.ibb.co/Mht5qh2/logo.png");
         logo.setAttribute("class", "logo");
         twit.appendChild(logo); // Agregar el logo al artículo del tweet
     });
 }
 
+async function waitForTweets() {
+            tweets = document.getElementsByTagName("article");
+            console.log("hola");
+            if (tweets.length >= index) {
+                tweet();
+            }
+            index+=5
+}
+
+console.log("hola");
+const interval = setInterval(waitForTweets, 5000); // Verificar cada 5 segundos
 
 
 
 // cambiarColor();
 // cambiarBoton();
-tweet();
+console.log("HOLAA");
