@@ -57,7 +57,7 @@ async function waitForTweets() {
 }
 
 async function agarrarTexto(twit){
-  console.log(twit.children);
+  console.log(twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent);
 }
 
 
