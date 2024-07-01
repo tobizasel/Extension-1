@@ -2,7 +2,7 @@
     width: 5rem;
     height: auto;
     position: absolute;
-    right: 0;
+    right: 42%;
     top: 0;
 }
 
@@ -12,6 +12,7 @@
 
 .verdadero{
     border: 2px solid green !important;
+    padding-top: 3rem !important;
 }
 
 .verdadero:hover, .verdadero:active{
@@ -20,6 +21,8 @@
 
 .falso{
     border: 2px solid red !important;
+    padding-top: 3rem !important;
+
 }
 
 .falso:hover{
