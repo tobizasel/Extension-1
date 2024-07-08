@@ -1,27 +1,32 @@
 {
-    "name": "MeContaron Prueba",
-    "description": "probando",
-    "version": "1.0",
-    "manifest_version": 3 ,
-    "action":{
-        "default_popup":"popup.html",
-        "default_icon": {
-            "128": "logo.png"
-        }
-    },
-    "icons":{
-        "128": "logo.png"
-    },
-    "content_scripts": [
-        {
-            "matches": ["https://x.com/*"],
-            "js": ["script.js"],
-            "css": ["tweet.css"]
-        }
-    ],
-    "permissions": [
-        "activeTab", "scripting"
-      ]
-
-
+  "name": "MeContaron Prueba",
+  "description": "probando",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "./assets/logo.png"
+    }
+  },
+  "icons": {
+    "128": "./assets/logo.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://youtube.com/*", "<all_urls>"],
+      "js": ["./src/js/script.js"],
+      "css": ["./src/css/tweet.css"]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["./src/js/script.js", "./src/css/style.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
