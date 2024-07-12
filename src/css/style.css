@@ -1,5 +1,80 @@
-div{
-    background-color: palevioletred;
-    color: #000;
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+
+:root{
+    --negro: #15202B;
+    --blanco: #f7f9f9;
+    --gris: #38444D;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--negro);
+    color: var(--blanco);
     text-align: center;
+    width: 30rem;
+    font-family: "Roboto Flex", sans-serif;
+}
+
+button{
+    font-family: inherit;
+    font-weight: 600;
+    text-align: start;
+}
+
+header{
+    border-bottom: 1px solid var(--gris);
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img {
+    padding: 1rem 0;
+    width: 5rem;
+}
+
+.logo h3{
+    font-size: 2rem;
+    font-family: "Kodchasan", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.login__titulo{
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.login__boton-1{
+    width: 70%;
+    height: 2.5rem;
+    border-radius: 20px;
+    background-color: var(--blanco);
+    margin-bottom: 1rem;
+}
+
+.login__o--wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login__linea{
+    width: 45%;
+    height: 2px;
+    background-color: red;
+}
+
+.login__o{
+    padding:0 20px ;
 }
