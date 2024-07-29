@@ -4,7 +4,8 @@
 :root{
     --negro: #15202B;
     --blanco: #f7f9f9;
-    --gris: #38444D;
+    --gris: #4d5963;
+    --celeste: #1D9BF0;
 }
 
 *{
@@ -61,20 +62,68 @@ header{
     border-radius: 20px;
     background-color: var(--blanco);
     margin-bottom: 1rem;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+
+}
+
+.login__boton-2{
+    width: 70%;
+    height: 2.5rem;
+    border-radius: 20px;
+    background-color: var(--celeste);
+    color:var(--blanco);
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.login__boton-3{
+    width: 70%;
+    height: 2.5rem;
+    border-radius: 20px;
+    background-color: transparent;
+    color:  var(--celeste);
+    border: 2px solid var(--celeste);
+    margin-bottom: 1rem;
+    text-align: center;
+    cursor: pointer;
+    
+}
+
+.login__boton-1 span{
+    width: 10rem;
+    margin: auto;
 }
 
 .login__o--wrapper{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .login__linea{
     width: 45%;
     height: 2px;
-    background-color: red;
+    background-color: var(--gris);
 }
 
 .login__o{
     padding:0 20px ;
+}
+
+.login__terminos{
+    font-size: .8rem;
+    margin: .5rem auto;
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
+.terminos__link{
+    color: var(--celeste);
+    text-decoration: underline;
 }
