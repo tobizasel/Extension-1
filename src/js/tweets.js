@@ -1,3 +1,16 @@
+(async () => {
+  const script = await import(chrome.runtime.getURL('src/js/script.js'));
+  
+  // Ahora puedes usar las funciones importadas
+  const keywords = script.extraerKeywords("Texto de ejemplo");
+  console.log(keywords);
+})();
+
+const contenido = []
+
+async function agarrarTexto(twit){
+  return twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent;
+}
 
 console.log("tweet");
    
@@ -41,7 +54,6 @@ console.log("tweet");
 
       
         tweetsArray.forEach((twit) => {
-          console.log(twit.getAttribute('estado'));
           if (twit.getAttribute('estado') === null ) { // Only assign estado if it hasn't been set yet
             const real = Math.floor(Math.random() * 2) + 1;
             if (real === 1) {
@@ -50,19 +62,19 @@ console.log("tweet");
               twit.setAttribute("estado", "false");
             }
           }
-          agarrarTexto(twit)
+          const textos = await (agarrarTexto(twit))
+          contenido.push(textos)
         });
         tweet(tweetsArray); // Call tweet with the correct array
         index += 5;
+        console.log(contenido);
+
     }
 
-    async function agarrarTexto(twit){
-      console.log(twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent);
-    }
 
 
-    const interval = setInterval(waitForTweets, 1000); // Verificar cada 3 segundos
 
-    const boton = document.getElementById("boton")
+    const interval = setInterval(waitForTweets, 5000); // Verificar cada 3 segundos
 
-    boton.addEventListener('click', console.log("hola"))
+
+    // extraerKeywords()
