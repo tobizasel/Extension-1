@@ -47,38 +47,41 @@ function extraerKeywords(texto) {
   return textoFiltrado;
 }
 
-// Array para almacenar tweets procesados
-var contenidoPosta = new Set();
+// Map para almacenar tweets únicos (clave: texto, valor: { texto, buscado })
+const contenidoPosta = new Map();
+const resultadoGoogle = [];  // Para almacenar los resultados de búsqueda
 
+// Función para buscar en Google
 function buscarGoogle(tweet) {
   var myHeaders = new Headers();
   myHeaders.append("X-API-KEY", "c53d59c25876d584593b303eb26a81bd7579734c");
   myHeaders.append("Content-Type", "application/json");
   
   var raw = JSON.stringify({
-  "q": (tweet),
-  "location": "Argentina",
-  "gl": "ar",
-  "hl": "es-419"
+    "q": tweet,
+    "location": "Argentina",
+    "gl": "ar",
+    "hl": "es-419"
   });
   
   var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: raw,
-  redirect: 'follow'
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
   };
   
   fetch("https://google.serper.dev/search", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
 // Función para extraer texto del tweet
 async function agarrarTexto(twit) {
   if (twit.children[0].children[0].children[1].children[1].children[1].textContent === "") {
-    return twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
+    const urlImagen = twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
+    return "vacio";
   }
   return twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent;
 }
@@ -108,38 +111,38 @@ async function waitForTweets() {
   // Ejecuta todas las promesas y espera a que terminen
   const textos = await Promise.all(contenidoPromesas);
 
-  // Filtra textos únicos y los guarda en el Set
+  // Filtra textos únicos y los guarda en el Map
   textos.forEach(texto => {
-    if (texto) {
-      contenidoPosta.add({
-        texto: texto,
-        buscado: false
-      });  // El Set garantiza que no se dupliquen
+    if (texto && !contenidoPosta.has(texto)) {  // Verifica si el tweet ya existe en el Map
+      contenidoPosta.set(texto, { texto: texto, buscado: false });
     }
   });
 
   // Procesa los tweets y añade bordes/logos
-
-
-  // Extrae keywords para cada tweet almacenado en contenidoPosta
-  contenidoPosta.forEach(texto => {
-    const keywords = extraerKeywords(texto.texto);
-    console.log("Keywords:", keywords);
-    
-  });
-
-
-
   tweets.forEach(twit => {
-    if (!twit.getAttribute('estado')) { // Solo asignar estado si aún no está definido
+    if (!twit.getAttribute('estado')) {  // Solo asignar estado si aún no está definido
       const real = Math.random() < 0.5 ? "true" : "false";
       twit.setAttribute("estado", real);
     }
-    procesarTweetEstado(twit); // Añadir bordes/logos según el estado
+    procesarTweetEstado(twit);  // Añadir bordes/logos según el estado
   });
 
-  console.log("Contenido procesado:", contenidoPosta);
+  // Extrae keywords para cada tweet almacenado en contenidoPosta
+  contenidoPosta.forEach((valor, clave) => {
+    const keywords = extraerKeywords(valor.texto);
+    
+    if (!valor.buscado && valor.texto !== "vacio") {
+      console.log(keywords, "buscado");
+      resultadoGoogle.push(buscarGoogle(keywords));  // Realizar la búsqueda en Google si no ha sido buscado
+      valor.buscado = true;  // Actualizar el estado de búsqueda
+    } else {
+      console.log(keywords, "no buscado");
+    }
+  });
+
+  console.log("Contenido procesado:", Array.from(contenidoPosta.values()));
 }
 
 // Llama a la función periódicamente para obtener nuevos tweets
 const interval = setInterval(waitForTweets, 5000);  // Verificar cada 5 segundos
+  
