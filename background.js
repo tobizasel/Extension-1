@@ -9,3 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
     // Puedes hacer algo con los datos, y luego enviar una respuesta
     sendResponse({ response: 'Datos recibidos: ' + request.data });
 });
+
+const cuentas = [
+  "ElTrumpista"
+]

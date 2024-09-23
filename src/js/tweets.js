@@ -79,11 +79,21 @@ function buscarGoogle(tweet) {
 
 // Función para extraer texto del tweet
 async function agarrarTexto(twit) {
+
+  const autorUrl = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].textContent;
+  // const partes = autorUrl.split('/')
+  const autor = autorUrl
+  console.log(autor);
+
   if (twit.children[0].children[0].children[1].children[1].children[1].textContent === "") {
-    const urlImagen = twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
+    // const urlImagen = twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
     return "vacio";
   }
-  return [twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent, twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].href];
+  console.log(twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0]);
+  return {
+    texto: twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent,
+    autor: autor
+  }
 }
 
 // Función para agregar bordes y logos según el estado del tweet
@@ -112,9 +122,12 @@ async function waitForTweets() {
   const textos = await Promise.all(contenidoPromesas);
 
   // Filtra textos únicos y los guarda en el Map
-  textos.forEach(texto => {
-    if (texto && !contenidoPosta.has(texto)) {  // Verifica si el tweet ya existe en el Map
-      contenidoPosta.set(texto, { texto: texto, buscado: false });
+  textos.forEach(contenidoTwit => {
+    if (contenidoTwit && contenidoTwit.texto && contenidoTwit.texto !== "vacio") {
+      const clave = contenidoTwit.texto + '|' + contenidoTwit.autor; // Crear clave única
+      if (!contenidoPosta.has(clave)) {
+        contenidoPosta.set(clave, { texto: contenidoTwit.texto, buscado: false, autor: contenidoTwit.autor });
+      }
     }
   });
 
@@ -122,6 +135,8 @@ async function waitForTweets() {
   tweets.forEach(twit => {
     if (!twit.getAttribute('estado')) {  // Solo asignar estado si aún no está definido
       const real = Math.random() < 0.5 ? "true" : "false";
+      
+
       twit.setAttribute("estado", real);
     }
     procesarTweetEstado(twit);  // Añadir bordes/logos según el estado
@@ -133,7 +148,7 @@ async function waitForTweets() {
     
     if (!valor.buscado && valor.texto !== "vacio") {
       console.log(keywords, "buscado");
-      resultadoGoogle.push(buscarGoogle(keywords));  // Realizar la búsqueda en Google si no ha sido buscado
+      // resultadoGoogle.push(buscarGoogle(keywords));  // Realizar la búsqueda en Google si no ha sido buscado
       valor.buscado = true;  // Actualizar el estado de búsqueda
     } else {
       console.log(keywords, "no buscado");
