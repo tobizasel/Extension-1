@@ -5,6 +5,7 @@
     --negro: #15202B;
     --blanco: #f7f9f9;
     --gris: #4d5963;
+    --grisClaro: #747e86;
     --celeste: #1D9BF0;
 }
 
@@ -126,4 +127,22 @@ header{
 .terminos__link{
     color: var(--celeste);
     text-decoration: underline;
+}
+
+.buscador{
+    padding: 2rem;
+}
+
+.buscador input{
+    padding: .5rem;
+    background-color: transparent;
+    border: 2px solid var(--gris);
+    border-radius: 10px;
+    width: 80%;
+    outline: none;
+    color: var(--grisClaro);
+}
+
+.buscador input:active{
+    border: 2px solid var(--grisClaro);
 }
