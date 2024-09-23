@@ -83,7 +83,7 @@ async function agarrarTexto(twit) {
     const urlImagen = twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
     return "vacio";
   }
-  return twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent;
+  return [twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent, twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].href];
 }
 
 // Función para agregar bordes y logos según el estado del tweet
