@@ -1,24 +1,32 @@
 chrome.runtime.onInstalled.addListener(async () => {
   console.log('Extensión instalada');
-  try {
-      const resultado = await busqueda();
-      console.log('Resultado de la búsqueda:', resultado.resultado);
-  } catch (error) {
-      console.error('Error en la búsqueda:', error);
-  }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   console.log('Mensaje recibido del popup:', request.message);
   console.log('Datos:', request.data); // Aquí tienes los datos enviados
 
+  
+  try {
+    const resultado = await busqueda(request.tweet, request.id);
+    console.log('Resultado de la búsqueda:', resultado.resultado);
+    sendResponse({ response: resultado });
+} catch (error) {
+    console.error('Error en la búsqueda:', error);
+}
+
   // Puedes hacer algo con los datos, y luego enviar una respuesta
-  sendResponse({ response: 'Datos recibidos: ' + request.data });
 });
 
 const busqueda = async () => {
+
+  const query = new URLSearchParams({
+    tweet: tweet,
+    id: id
+  }).toString();
+
   try {
-      const response = await fetch("http://localhost:5000/api");
+      const response = await fetch(`http://localhost:5000/api?${query}`);
       if (!response.ok) {
           throw new Error('Network response was not ok');
       }
