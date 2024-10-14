@@ -1,8 +1,10 @@
 // Función para extraer texto del tweet
+const contenidoPosta = new Map()
+
 async function agarrarTexto(twit) {
 
   const autorUrl = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].textContent;
-  const idTweet = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].href
+  //const idTweet = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].href
   // const partes = autorUrl.split('/')
   const autor = autorUrl
   console.log(autor);
@@ -15,7 +17,7 @@ async function agarrarTexto(twit) {
   return {
     texto: twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent,
     autor: autor,
-    id: idTweet
+    id: 2
   }
 }
 
@@ -54,11 +56,28 @@ async function waitForTweets() {
     }
   });
 
+  const port = chrome.runtime.connect({ name: "search" });
+
   contenidoPosta.forEach((tweet) => {
-    chrome.runtime.sendMessage(tweet, (response) => {
-      console.log("Respuesta del background script:", response.response);
+    if (!tweet.texto || !tweet.autor) {
+      console.error("El tweet no contiene la información necesaria:", tweet);
+      return; // Evitar enviar mensajes si falta información
+    }
+  
+    port.postMessage({
+      tweet: tweet.texto,
+      autor: tweet.autor,
+      id: tweet.id
     });
-  })
+  });
+
+  port.onMessage.addListener((response) => {
+    if (response && response.resultado) {
+      console.log("Respuesta del background script:", response.resultado);
+    } else {
+      console.error("No se recibió un resultado válido del background script.", response);
+    }
+  });
 
   // Procesa los tweets y añade bordes/logos
   tweets.forEach(twit => {
