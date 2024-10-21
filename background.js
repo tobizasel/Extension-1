@@ -15,12 +15,12 @@ chrome.runtime.onConnect.addListener((port) => {
     console.log('Mensaje recibido del content-script:', request);
 
     try {
-      console.log("18BG: LLEGO HASTA BG 18");
       const resultado = await busqueda(request.tweet, request.id);
       console.log('20BG: Resultado de la búsqueda:', resultado);
 
       if (resultado && resultado.resultado) {
-        port.postMessage({ resultado: resultado.resultado });
+        console.log("RESULTADO",resultado);
+        port.postMessage({ resultado: resultado });
       } else {
         port.postMessage({ error: 'No se encontró un resultado' });
       }
