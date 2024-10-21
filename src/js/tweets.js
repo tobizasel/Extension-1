@@ -1,10 +1,11 @@
 // Función para extraer texto del tweet
 const contenidoPosta = new Map()
 
+
 async function agarrarTexto(twit) {
 
   const autorUrl = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].textContent;
-  //const idTweet = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].href
+  const idTweet = twit.children[0].children[0].children[1].children[1].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[2].children[0].href
   // const partes = autorUrl.split('/')
   const autor = autorUrl
   console.log(autor);
@@ -17,7 +18,7 @@ async function agarrarTexto(twit) {
   return {
     texto: twit.children[0].children[0].children[1].children[1].children[1].children[0].children[0].textContent,
     autor: autor,
-    id: 2
+    id: idTweet
   }
 }
 
@@ -63,6 +64,7 @@ async function waitForTweets() {
       console.error("El tweet no contiene la información necesaria:", tweet);
       return; // Evitar enviar mensajes si falta información
     }
+    console.log(tweet);
   
     port.postMessage({
       tweet: tweet.texto,
@@ -72,8 +74,10 @@ async function waitForTweets() {
   });
 
   port.onMessage.addListener((response) => {
+    console.log("75TWEETS: ", response);
     if (response && response.resultado) {
       console.log("Respuesta del background script:", response.resultado);
+      
     } else {
       console.error("No se recibió un resultado válido del background script.", response);
     }
@@ -95,5 +99,6 @@ async function waitForTweets() {
 }
 
 // Llama a la función periódicamente para obtener nuevos tweets
+console.log("HOLAAA");
 const interval = setInterval(waitForTweets, 5000);  // Verificar cada 5 segundos
   
