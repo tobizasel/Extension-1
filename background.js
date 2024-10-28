@@ -15,7 +15,7 @@ chrome.runtime.onConnect.addListener((port) => {
     console.log('Mensaje recibido del content-script:', request);
 
     try {
-      const resultado = await busqueda(request.tweet, request.id);
+      const resultado = await busqueda(request.tweet, request.id, request.autor);
       console.log('20BG: Resultado de la búsqueda:', resultado);
 
       if (resultado && resultado.resultado) {
@@ -31,11 +31,12 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-const busqueda = async (tweet,id) => {
+const busqueda = async (tweet,id, autor) => {
 
   const query = new URLSearchParams({
     tweet: tweet,
-    id: id
+    id: id,
+    autor: autor
   }).toString();
 
   try {

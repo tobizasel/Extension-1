@@ -1,128 +1,119 @@
-// Función para extraer texto del tweet
-const contenidoPosta = new Map()
+const contenidoPosta = new Map();
 const verificaciones = [];
+var iteradorTwits = 0;
+const boton = document.createElement("button");
+
 
 async function agarrarTexto(twit) {
+    const autorUrl = twit.children?.[0]?.children?.[0]?.children?.[1]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.textContent;
+    const url = twit.children?.[0]?.children?.[0]?.children?.[1]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[1]?.children?.[0]?.children?.[2]?.children?.[0]?.href;
 
-  const autorUrl = twit.children?.[0]?.children?.[0]?.children?.[1]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.textContent;
-  var tweetId
-  const url = twit.children?.[0]?.children?.[0]?.children?.[1]?.children?.[1]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[0]?.children?.[1]?.children?.[0]?.children?.[2]?.children?.[0]?.href;
+    const tweetId = url ? url.split('/').pop() : 2;
+    const autor = autorUrl || "@yo";
+    const texto = twit.children[0]?.children[0]?.children[1]?.children[1]?.children[1]?.children[0]?.children[0]?.textContent || "";
 
-  if (url) {
-    tweetId = url.split('/').pop();
-  } else {
-    tweetId = 2
-  }
-
-  // const partes = autorUrl.split('/')
-  const autor = autorUrl || "@yo"
-  console.log(autor);
-
-  const texto = twit.children[0]?.children[0]?.children[1]?.children[1]?.children[1]?.children[0]?.children[0]?.textContent
-  const textoPosta = texto || ""
-  console.log(texto);
-  // if (twit.children[0].children[0].children[1].children[1].children[1].textContent === "") {
-  //   // const urlImagen = twit.children[0].children[0].children[1].children[1].children[2].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[1].children[0].children[1].src;
-  //   return "vacio";
-  // }
-  return {
-    texto: textoPosta,
-    autor: autor,
-    id: tweetId
-  }
+    return {
+        texto,
+        autor,
+        id: tweetId,
+        analizado: false, // Añadir estado de análisis
+        estado: null // Añadir estado inicial
+    };
 }
 
-// Función para agregar bordes y logos según el estado del tweet
-function procesarTweetEstado(twit) {
-  if ((twit.getAttribute('estado') === "true") || (twit.getAttribute('estado') === true)) {
-    twit.classList.add("verdadero"); // Agregar borde o estilo si es verdadero
-  } else if ((twit.getAttribute('estado') === "false") || (twit.getAttribute('estado') === false)) {
-    twit.classList.add("falso"); // Agregar borde o estilo si es falso
-  }
+function procesarTweetEstado(twit, veredicto) {
+    if (veredicto.includes("verdadero") || (twit.getAttribute('estado') === "true")) {
+        twit.classList.add("verdadero");
+    } else if (veredicto.includes("falso") || (twit.getAttribute('estado') === "false")) {
+        twit.classList.add("falso");
+    } else {
+        twit.classList.add("inconcluso");
+    }
 
-  // Agregar logo si no está ya presente
-  if (!twit.querySelector(".logo")) {
-    const logo = document.createElement("img");
-    logo.setAttribute("src", "https://i.ibb.co/rHcZPqZ/logo-lupa.png");
-    logo.setAttribute("class", "logo");
-    twit.appendChild(logo); // Agregar el logo al tweet
-  }
+    if (!twit.querySelector(".logo")) {
+        const logo = document.createElement("img");
+        logo.setAttribute("src", "https://i.ibb.co/rHcZPqZ/logo-lupa.png");
+        logo.setAttribute("class", "logo");
+        twit.appendChild(logo);
+    }
 }
 
-// Función para procesar los tweets
+const ponerBoton = (tweets) => {
+  tweets.forEach(tweet => {
+    if (!tweet.querySelector(".boton-analizar")) {
+      boton.textContent = "Analizar"
+      boton.setAttribute("class", "boton-analizar");
+      tweet.appendChild(boton);
+    }
+  })
+}
+
+const analizar = () => {
+
+}
+
+boton.addEventListener("click", () => analizar)
+
 async function waitForTweets() {
-  const tweets = Array.from(document.getElementsByTagName("article"));
-  const contenidoPromesas = tweets.map(agarrarTexto);
+    const tweets = Array.from(document.getElementsByTagName("article"));
+    const contenidoPromesas = tweets.map(agarrarTexto);
+    const textos = await Promise.all(contenidoPromesas);
+    ponerBoton(tweets)
 
-  // Ejecuta todas las promesas y espera a que terminen
-  const textos = await Promise.all(contenidoPromesas);
-
-  // Filtra textos únicos y los guarda en el Map
-  textos.forEach(contenidoTwit => {
-    if (contenidoTwit && contenidoTwit.texto && contenidoTwit.texto !== "vacio") {
-      const clave = contenidoTwit.texto + '|' + contenidoTwit.autor; // Crear clave única
-      if (!contenidoPosta.has(clave)) {
-        contenidoPosta.set(clave, { texto: contenidoTwit.texto, buscado: false, autor: contenidoTwit.autor, id: contenidoTwit.id });
-      }
-    }
-  });
-
-  const port = chrome.runtime.connect({ name: "search" });
-
-  contenidoPosta.forEach((tweet) => {
-    if (!tweet.texto || !tweet.autor) {
-      console.error("El tweet no contiene la información necesaria:", tweet);
-      return; // Evitar enviar mensajes si falta información
-    }
-    console.log(tweet);
-  
-    port.postMessage({
-      tweet: tweet.texto,
-      autor: tweet.autor,
-      id: tweet.id
+    textos.forEach(contenidoTwit => {
+        if (contenidoTwit && contenidoTwit.texto && contenidoTwit.texto !== "vacio") {
+            const clave = `${contenidoTwit.texto}|${contenidoTwit.autor}`;
+            if (!contenidoPosta.has(clave)) {
+                contenidoPosta.set(clave, { ...contenidoTwit, buscado: false });
+            }
+        }
     });
-  });
 
-  port.onMessage.addListener((response) => {
-    console.log("75TWEETS: ", response);
-      console.log("Respuesta del background script:", response.resultado.resultado, response.resultado.id);
-      verificaciones.push(response.resultado)
+    const port = chrome.runtime.connect({ name: "search" });
+    const tweetsValores = Array.from(contenidoPosta.values()).filter(tweet => !tweet.analizado); // Filtrar solo los no analizados
 
-    
-      // contenidoPosta.forEach(tweet => {
-      //   if ((tweet.texto == response.resultado.tweet)) {
-      //     if (response.resultado.tweet.includes("VERDADERO")) {
-      //       console.log("ESTE TWIT ES VERDADERO");
-      //       tweet.setAttribute("estado", true);
-      //     } else if (response.resultado.tweet.includes("FALSO")){
-      //       console.log("ESTE TWIT ES FALSO");
-      //       tweet.setAttribute("estado", false);
-      //     }
-      //     procesarTweetEstado(tweet);  // Añadir bordes/logos según el estado
-      //   } else{
-      //     console.log(tweet.texto, "=" , response.resultado.tweet, "ESTO NO ENTRO");
-      //   }
-      // });
-    
-  });
+    // Verificar que el iterador no exceda el número de tweets disponibles
+    if (iteradorTwits < tweetsValores.length) {
+        const tweetToAnalyze = tweetsValores[iteradorTwits];
+        port.postMessage({
+            tweet: tweetToAnalyze.texto,
+            autor: tweetToAnalyze.autor,
+            id: tweetToAnalyze.id
+        });
 
-  // Procesa los tweets y añade bordes/logos
-  // tweets.forEach(twit => {
-  //   if (!twit.getAttribute('estado')) {  // Solo asignar estado si aún no está definido
-  //     const real = Math.random() < 0.5 ? "true" : "false";
-      
+        // Marcar como analizado
+        tweetsValores[iteradorTwits].analizado = true;
+        iteradorTwits++; // Incrementar el iterador
+    }
 
-  //     twit.setAttribute("estado", real);
-  //   }
-  //   procesarTweetEstado(twit);  // Añadir bordes/logos según el estado
-  // });
+    port.onMessage.addListener((response) => {
+        contenidoPosta.forEach(tweet => {
+            if (tweet.texto === response.resultado.tweet) {
+                // Guardar el estado del tweet basado en la respuesta
+                tweet.estado = response.resultado.resultado.toLowerCase(); // Guardar el estado (ej. "verdadero" o "falso")
+
+                tweets.forEach(tweetART => {
+                    if (tweetART.children[0]?.children[0]?.children[1]?.children[1]?.children[1]?.children[0]?.children[0]?.textContent === response.resultado.tweet) {
+                        procesarTweetEstado(tweetART, tweet.estado);
+                    }
+
+                    textos.forEach(tweetPreExistente => {
+                      if (tweetART.children[0]?.children[0]?.children[1]?.children[1]?.children[1]?.children[0]?.children[0]?.textContent === tweetPreExistente.texto) {
+                        if (tweetPreExistente.analizado) {
+                          procesarTweetEstado(tweetART, tweetPreExistente);
+                        }
+                      }
+                    })
+
+                  });
 
 
-  console.log("Contenido procesado:", Array.from(contenidoPosta.values()));
+            }
+        });
+    });
+
+    console.log("Contenido procesado:", Array.from(contenidoPosta.values()));
 }
 
 // Llama a la función periódicamente para obtener nuevos tweets
-console.log("HOLAAA");
-console.log(verificaciones);
-const interval = setInterval(waitForTweets, 5000);  // Verificar cada 5 segundos
-  
+const interval = setInterval(waitForTweets, 5000);

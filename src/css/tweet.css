@@ -10,8 +10,22 @@
     border: none;
 }
 
+.boton-analizar{
+    width: 200px !important;
+    height: 3rem !important;
+    border: 2px solid lightskyblue;
+    border-radius: 20px;
+    color: lightskyblue;
+    background-color: transparent;
+}
+
 .verdadero{
     border: 2px solid green !important;
+    padding-top: 3rem !important;
+}
+
+.inconcluso{
+    border: 2px solid lightskyblue !important;
     padding-top: 3rem !important;
 }
 
