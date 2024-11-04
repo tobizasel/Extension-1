@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
 .logo{
     width: 5rem;
     height: auto;
@@ -6,17 +9,44 @@
     top: 0;
 }
 
+button{
+    font-family: "Kanit", sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+}
+
 *{
     border: none;
 }
 
 .boton-analizar{
-    width: 200px !important;
     height: 3rem !important;
+    padding: 0 1rem;
+    margin: 1rem;
     border: 2px solid lightskyblue;
     border-radius: 20px;
     color: lightskyblue;
     background-color: transparent;
+    text-align: center;
+    cursor: pointer;
+
+}
+
+.boton-analizar:hover{
+    color: #1D9BF0;
+    border: 2px solid #1D9BF0;
+
+}
+
+.boton-analizar--apretado{
+    height: 3rem !important;
+    padding: 0 1rem;
+    margin: 1rem;
+    border-radius: 20px;
+    color: #f7f7f7;
+    background-color: #1D9BF0;
+    text-align: center;
+    cursor: pointer;
 }
 
 .verdadero{
