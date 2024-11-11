@@ -28,6 +28,7 @@ async function agarrarTexto(twit) {
     } 
   } 
 
+
   return {
     texto,
     autor,
@@ -35,6 +36,17 @@ async function agarrarTexto(twit) {
     analizado: false, // Añadir estado de análisis
     estado: null, // Añadir estado inicial
   };
+}
+
+const crearAlerta = () => {
+  alerta = document.createElement('div');
+  alerta.className = 'alerta';
+  document.body.appendChild(alerta);
+  alerta.textContent = "El tweet ya fue analizado"
+
+  setTimeout(() => {
+    alerta.remove()
+  }, 3000);
 }
 
 function procesarTweetEstado(twit, veredicto) {
@@ -48,28 +60,30 @@ function procesarTweetEstado(twit, veredicto) {
 
   if (
     veredicto.includes("verdadero") ||
-    twit.getAttribute("estado") === "true"
+    twit.getAttribute("estado") == "true"
   ) {
     const logo = twit.children[1];
-    logo.setAttribute("src", "https://i.ibb.co/0C0fX9d/logo-verdadero.png");
+    logo.setAttribute("src", "https://i.ibb.co/Lvf4Thn/logo-verdadero.png");
     twit.classList.add("verdadero");
+    twit.setAttribute("estado", "true")
   } else if (
     veredicto.includes("falso") ||
-    twit.getAttribute("estado") === "false"
+    twit.getAttribute("estado") == "false"
   ) {
     twit.classList.add("falso");
+    twit.setAttribute("estado", "false")
     const logo = twit.children[1];
-    logo.setAttribute("src", "https://i.ibb.co/Lvf4Thn/logo-falso.png");
+    logo.setAttribute("src", "https://i.ibb.co/0C0fX9d/logo-falso.png");
   } else {
     twit.classList.add("inconcluso");
   }
+
 
 
 }
 
 const ponerBoton = (tweets, textos) => {
   tweets.forEach((tweet) => {
-    console.log(tweet.children);
     if (!tweet.querySelector(".boton-analizar") &&  !tweet.querySelector(".boton-analizar--apretado") && tweet.children.length < 2) {
       const boton = document.createElement("button");
       boton.textContent = "Chequear";
@@ -77,6 +91,20 @@ const ponerBoton = (tweets, textos) => {
       boton.onclick = () => analizar(tweet, tweets, textos); // Usar onclick para llamar a analizar
       tweet.appendChild(boton);
     }
+
+    if (tweet.getAttribute("estado") === "true") {
+      const logo = tweet.children[1];
+      logo.setAttribute("src", "https://i.ibb.co/Lvf4Thn/logo-verdadero.png");
+      tweet.classList.add("verdadero");
+      tweet.setAttribute("estado", "true")
+    }
+    else if (tweet.getAttribute("estado") === "false") {
+        const logo = tweet.children[1];
+        logo.setAttribute("src", "https://i.ibb.co/Lvf4Thn/logo-falso.png");
+        tweet.classList.add("falso");
+        tweet.setAttribute("estado", "false")
+      }
+    
   });
 };
 
@@ -128,6 +156,7 @@ const analizar = async (tweet, tweets, textos) => {
             ) {
               if (tweetPreExistente.analizado) {
                 procesarTweetEstado(tweetART, tweetPreExistente);
+
               }
             }
           });
@@ -160,4 +189,4 @@ async function waitForTweets() {
 }
 
 // Llama a la función periódicamente para obtener nuevos tweets
-const interval = setInterval(waitForTweets, 5000);
+const interval = setInterval(waitForTweets, 1000);
