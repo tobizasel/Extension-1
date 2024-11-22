@@ -73,7 +73,7 @@ function procesarTweetEstado(twit, veredicto) {
     twit.classList.add("falso");
     twit.setAttribute("estado", "false")
     const logo = twit.children[1];
-    logo.setAttribute("src", "https://i.ibb.co/0C0fX9d/logo-falso.png");
+    logo.setAttribute("src", "https://i.ibb.co/H733WKm/falsoconfirmado.png");
   } else {
     twit.classList.add("inconcluso");
   }
@@ -100,7 +100,7 @@ const ponerBoton = (tweets, textos) => {
     }
     else if (tweet.getAttribute("estado") === "false") {
         const logo = tweet.children[1];
-        logo.setAttribute("src", "https://i.ibb.co/Lvf4Thn/logo-falso.png");
+        logo.setAttribute("src", "https://i.ibb.co/H733WKm/falsoconfirmado.png");
         tweet.classList.add("falso");
         tweet.setAttribute("estado", "false")
       }
