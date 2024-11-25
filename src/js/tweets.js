@@ -73,9 +73,10 @@ function procesarTweetEstado(twit, veredicto) {
     twit.classList.add("falso");
     twit.setAttribute("estado", "false")
     const logo = twit.children[1];
-    logo.setAttribute("src", "https://i.ibb.co/H733WKm/falsoconfirmado.png");
+    logo.setAttribute("src", "https://i.ibb.co/X5ZdK6N/falsoconfirmado-2.png");
   } else {
     twit.classList.add("inconcluso");
+    twit.setAttribute("estado", "inconcluso")
   }
 
 
@@ -100,10 +101,15 @@ const ponerBoton = (tweets, textos) => {
     }
     else if (tweet.getAttribute("estado") === "false") {
         const logo = tweet.children[1];
-        logo.setAttribute("src", "https://i.ibb.co/H733WKm/falsoconfirmado.png");
+        logo.setAttribute("src", "https://i.ibb.co/X5ZdK6N/falsoconfirmado-2.png");
         tweet.classList.add("falso");
         tweet.setAttribute("estado", "false")
-      }
+    } else if (tweet.getAttribute("estado") === "inconcluso") {
+        const logo = tweet.children[1];
+        logo.setAttribute("src", "https://i.ibb.co/rHcZPqZ/logo-lupa.png");
+        tweet.classList.add("inconcluso");
+        tweet.setAttribute("estado", "inconcluso")
+    }
     
   });
 };
